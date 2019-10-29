@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kumquat.attachment.dao.FileInfoMapper">
+  <resultMap id="BaseResultMap" type="com.kumquat.attachment.domain.FileInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="fileinfo_id" jdbcType="VARCHAR" property="fileinfoId" />
+    <result column="fileinfo_ref_id" jdbcType="VARCHAR" property="fileinfoRefId" />
+    <result column="fileinfo_file_type" jdbcType="VARCHAR" property="fileinfoFileType" />
+    <result column="fileinfo_server_file_name" jdbcType="VARCHAR" property="fileinfoServerFileName" />
+    <result column="fileinfo_client_file_name" jdbcType="VARCHAR" property="fileinfoClientFileName" />
+    <result column="fileinfo_server_path" jdbcType="VARCHAR" property="fileinfoServerPath" />
+    <result column="fileinfo_upload_user_id" jdbcType="VARCHAR" property="fileinfoUploadUserId" />
+    <result column="fileinfo_upload_date" jdbcType="TIMESTAMP" property="fileinfoUploadDate" />
+    <result column="fileinfo_content" jdbcType="LONGVARCHAR" property="fileinfoContent" />
+    <result column="is_import" jdbcType="INTEGER" property="isImport" />
+  </resultMap>
+
+
+  <update id="updateFileInfoByIds" parameterType="map">
+    UPDATE file_info t set t.fileinfo_ref_id = #{id} where t.fileinfo_id IN
+    <foreach collection="fileIds" item="item" open="(" close=")" separator=",">
+      #{item.fileinfoId}
+    </foreach>
+  </update>
+
+  <select id="getFileInfoByTableName" parameterType="map" resultMap="BaseResultMap">
+    SELECT t.* from file_info t where t.fileinfo_ref_id in
+    (select id from ${tablename}
+    <if test="type=='1'">
+      where is_import =2
+    </if>
+    )
+  </select>
+
+</mapper>
